@@ -5,3 +5,38 @@ git commit -m "first commit"
 git branch -M main
 git remote add origin https://github.com/SuchiiJain/WEHACK2024.git
 git push -u origin main
+
+import streamlit as st
+import pandas as pd
+
+def detect_fraudulent_claims(df):
+    # Define criteria for detecting fraudulent claims
+    suspicious_age_threshold = 25
+    high_premium_threshold = 2000
+    high_claim_amount_threshold = 50000
+
+    # Apply criteria to the dataset
+    fraudulent_claims = df[
+        (df['age'] < suspicious_age_threshold) &
+        (df['policy_annual_premium'] > high_premium_threshold) |
+        (df['total_claim_amount'] > high_claim_amount_threshold)
+    ]
+
+    return fraudulent_claims
+
+def main():
+    st.title('Insurance Fraud Detection App')
+
+    st.sidebar.title('Settings')
+    csv_file = st.sidebar.file_uploader("Upload CSV", type=["csv"])
+
+    if csv_file is not None:
+        st.sidebar.write('CSV uploaded successfully!')
+        df = pd.read_csv(csv_file)
+        fraudulent_claims = detect_fraudulent_claims(df)
+
+        st.subheader('Fraudulent Claims:')
+        st.write(fraudulent_claims)
+
+if __name__ == '__main__':
+    main()
